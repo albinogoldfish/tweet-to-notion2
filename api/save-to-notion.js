@@ -1,5 +1,5 @@
 // This is your Vercel backend API route file (e.g., pages/api/save-to-notion.js)
-console.log('🔐 NOTION_TOKEN:', process.env.NOTION_TOKEN);
+console.log('🔐 NOTION_API_KEY:', process.env.NOTION_API_KEY);
 export default async function handler(req, res) {
   // IMPORTANT: Replace 'nmeacjjdjgaobpilmbdpeeihmbhjobik' with your actual Chrome Extension ID.
   // You can find your extension ID by going to chrome://extensions in your browser
