@@ -1,5 +1,5 @@
 {
-  "name": "tweet-to-notionv2",
+  "name": "tweet-to-notion2",
   "version": "1.0.0",
   "dependencies": {
     "@notionhq/client": "^2.2.4"
