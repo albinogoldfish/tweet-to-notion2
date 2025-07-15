@@ -1,91 +1,91 @@
-// This is your Vercel backend API route file (e.g., pages/api/save-to-notion.js)
-
 export default async function handler(req, res) {
-console.log('🔐 NOTION_API_KEY:', process.env.NOTION_API_KEY); //REMOVE later
-  
-  // IMPORTANT: Replace 'nmeacjjdjgaobpilmbdpeeihmbhjobik' with your actual Chrome Extension ID.
-  // You can find your extension ID by going to chrome://extensions in your browser
-  // and enabling "Developer mode".
+  console.log('🔐 NOTION_API_KEY:', process.env.NOTION_API_KEY); // REMOVE in production
+
   const allowedOrigin = 'chrome-extension://nmeacjjdjgaobpilmbdpeeihmbhjobik';
 
-  // Set CORS headers to allow requests from your Chrome Extension
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Ensure all methods your frontend might use are allowed
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow the Content-Type header
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight OPTIONS requests. Browsers send these before actual POST requests.
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Only allow POST requests for saving data
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  const { tweetText, tweetUrl } = req.body;
+  const {
+    tweetText,
+    tweetUrl,
+    author,
+    handle,
+    date,
+    time,
+    location,
+    views,
+    comments,
+    likes,
+    shares
+  } = req.body;
 
-  // Validate incoming data
   if (!tweetText || !tweetUrl) {
     return res.status(400).json({ error: 'Missing tweetText or tweetUrl' });
   }
 
   try {
-    // Dynamically import the Notion client to minimize cold start time if not always used
     const { Client } = await import('@notionhq/client');
-    const notion = new Client({ auth: process.env.NOTION_API_KEY }); // Ensure NOTION_API_KEY is set in Vercel environment variables
+    const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
-    // Create a new page in your Notion database
     await notion.pages.create({
-      parent: { database_id: process.env.NOTION_DB_ID }, // Ensure NOTION_DB_ID is set in Vercel environment variables
-     properties: {
-  Name: {
-    title: [{ text: { content: tweetText.slice(0, 100) } }]
-  },
-  Tweet: {
-    rich_text: [{ text: { content: tweetText } }]
-  },
-  Author: {
-    rich_text: [{ text: { content: author } }]
-  },
-  Handle: {
-    rich_text: [{ text: { content: handle } }]
-  },
-  Time: {
-    rich_text: [{ text: { content: time } }]
-  },
-  Date: {
-    rich_text: [{ text: { content: date } }]
-  },
-  Location: {
-    rich_text: [{ text: { content: location } }]
-  },
-  Views: {
-    number: parseInt(views || '0')
-  },
-  Comments: {
-    number: parseInt(comments || '0')
-  },
-  Likes: {
-    number: parseInt(likes || '0')
-  },
-  Shares: {
-    number: parseInt(shares || '0')
-  },
-  URL: {
-    url: tweetUrl
-  }
-}
+      parent: { database_id: process.env.NOTION_DB_ID },
+      properties: {
+        Name: {
+          title: [{ text: { content: tweetText.slice(0, 100) } }]
+        },
+        Tweet: {
+          rich_text: [{ text: { content: tweetText } }]
+        },
+        Author: {
+          rich_text: [{ text: { content: author || '' } }]
+        },
+        Handle: {
+          rich_text: [{ text: { content: handle || '' } }]
+        },
+        Time: {
+          rich_text: [{ text: { content: time || '' } }]
+        },
+        Date: {
+          rich_text: [{ text: { content: date || '' } }]
+        },
+        Location: {
+          rich_text: [{ text: { content: location || '' } }]
+        },
+        Views: {
+          number: views ? parseInt(views) : 0
+        },
+        Comments: {
+          number: comments ? parseInt(comments) : 0
+        },
+        Likes: {
+          number: likes ? parseInt(likes) : 0
+        },
+        Shares: {
+          number: shares ? parseInt(shares) : 0
+        },
+        URL: {
+          url: tweetUrl
+        }
+      }
     });
 
-    // Send a success response
     return res.status(200).json({ message: 'Saved to Notion' });
   } catch (error) {
-    // Log and send an error response if Notion API fails
     console.error('Notion API failed:', error);
-    return res.status(500).json({ error: 'Notion API failed', detail: error.message });
+    return res.status(500).json({
+      error: 'Notion API failed',
+      detail: error.message
+    });
   }
 }
-
-
-
