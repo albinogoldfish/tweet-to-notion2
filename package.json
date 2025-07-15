@@ -1,8 +1,15 @@
 {
   "name": "tweet-to-notion2",
   "version": "1.0.0",
+  "description": "API to save tweets to Notion",
+  "main": "api/save-to-notion.js",
+  "scripts": {
+    "start": "node api/save-to-notion.js"
+  },
   "dependencies": {
-    "@notionhq/client": "^2.2.4"
+    "@notionhq/client": "^2.x.x" // Make sure this is up-to-date
+  },
+  "engines": {
+    "node": "18.x" // Or "20.x", "21.x", etc. Use a version Vercel supports.
   }
 }
-
