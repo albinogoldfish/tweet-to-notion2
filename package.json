@@ -7,9 +7,9 @@
     "start": "node api/save-to-notion.js"
   },
   "dependencies": {
-    "@notionhq/client": "^2.x.x" // Make sure this is up-to-date
+    "@notionhq/client": "^2.2.4"
   },
   "engines": {
-    "node": "18.x" // Or "20.x", "21.x", etc. Use a version Vercel supports.
+    "node": "18.x"
   }
 }
