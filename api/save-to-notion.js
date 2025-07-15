@@ -38,19 +38,44 @@ console.log('🔐 NOTION_API_KEY:', process.env.NOTION_API_KEY); //REMOVE later
     // Create a new page in your Notion database
     await notion.pages.create({
       parent: { database_id: process.env.NOTION_DB_ID }, // Ensure NOTION_DB_ID is set in Vercel environment variables
-      properties: {
-        // 'Name' property for the tweet text (truncated to 100 chars for Notion title)
-Name: {
-  title: [{ text: { content: tweetText.slice(0, 100) } }] // still use for title
-},
-Tweet: {
-  rich_text: [{ text: { content: tweetText } }] // full text here
-},
-        // 'URL' property for the tweet URL
-        URL: {
-          url: tweetUrl
-        }
-      }
+     properties: {
+  Name: {
+    title: [{ text: { content: tweetText.slice(0, 100) } }]
+  },
+  Tweet: {
+    rich_text: [{ text: { content: tweetText } }]
+  },
+  Author: {
+    rich_text: [{ text: { content: author } }]
+  },
+  Handle: {
+    rich_text: [{ text: { content: handle } }]
+  },
+  Time: {
+    rich_text: [{ text: { content: time } }]
+  },
+  Date: {
+    rich_text: [{ text: { content: date } }]
+  },
+  Location: {
+    rich_text: [{ text: { content: location } }]
+  },
+  Views: {
+    number: parseInt(views || '0')
+  },
+  Comments: {
+    number: parseInt(comments || '0')
+  },
+  Likes: {
+    number: parseInt(likes || '0')
+  },
+  Shares: {
+    number: parseInt(shares || '0')
+  },
+  URL: {
+    url: tweetUrl
+  }
+}
     });
 
     // Send a success response
@@ -61,3 +86,6 @@ Tweet: {
     return res.status(500).json({ error: 'Notion API failed', detail: error.message });
   }
 }
+
+
+
